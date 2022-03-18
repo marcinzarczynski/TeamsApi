@@ -1,15 +1,16 @@
 package com.example.TeamsApi.controller;
 
 
-import brave.Response;
-import com.example.TeamsApi.model.Task;
+import com.example.TeamsApi.request.CreateTaskRequest;
+import com.example.TeamsApi.request.UpdateTaskRequest;
 import com.example.TeamsApi.response.TaskResponse;
-import com.example.TeamsApi.service.TasksService;
+import com.example.TeamsApi.service.TaskService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 
@@ -17,37 +18,47 @@ import java.util.List;
 @RequestMapping("/task")
 public class TaskController {
 
-    private final TasksService tasksService;
+    private final TaskService taskService;
 
-    public TaskController(TasksService tasksService) { this.tasksService = tasksService;}
+    public TaskController(TaskService taskService) { this.taskService = taskService;}
 
     @GetMapping
-    List<Task> getTasks(){ return tasksService.getTasks();}
+    public ResponseEntity<List<TaskResponse>> getAllTasks(){
+        return new ResponseEntity<>(taskService.getAllTasks(), HttpStatus.OK);
+    }
 
     @PostMapping
-    Task createTasks(@RequestBody Task task){ return tasksService.createTask(task);}
+    public ResponseEntity<TaskResponse> addTasks(@Valid  @RequestBody CreateTaskRequest createTaskRequest){
+        return new ResponseEntity<>(taskService.addTask(createTaskRequest), HttpStatus.CREATED);
+    }
+
+    @PutMapping()
+    public ResponseEntity<TaskResponse> updateTask(@Valid @RequestBody UpdateTaskRequest updateTaskRequest) {
+        return taskService.updateTask(updateTaskRequest).map(m -> new ResponseEntity<>(new TaskResponse(m), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
     @GetMapping("/findByTitle/{title}")
     public ResponseEntity<TaskResponse> findByTitle(@PathVariable String title){
-        return tasksService.findByTitle(title).map(u -> new ResponseEntity<>(u, HttpStatus.OK )).
+        return taskService.findByTitle(title).map(u -> new ResponseEntity<>(u, HttpStatus.OK )).
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/findByDate/{date}")
     public ResponseEntity<TaskResponse> findByDate(@PathVariable Date date){
-        return tasksService.findByDate(date).map(u-> new ResponseEntity<>(u,HttpStatus.OK)).
+        return taskService.findByDate(date).map(u-> new ResponseEntity<>(u,HttpStatus.OK)).
                 orElseGet(()-> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/findByStatus/{status}")
     public ResponseEntity<TaskResponse> findByStatus(@PathVariable String status){
-        return tasksService.findByStatus(status).map(u-> new ResponseEntity<>(u,HttpStatus.OK)).
+        return taskService.findByStatus(status).map(u-> new ResponseEntity<>(u,HttpStatus.OK)).
                 orElseGet(()-> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/deleteTask/{id}")
     public ResponseEntity<TaskResponse> deleteTask(@PathVariable Long id){
-        return tasksService.deleteTask(id) ?
+        return taskService.deleteTask(id) ?
                 new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

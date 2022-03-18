@@ -19,14 +19,15 @@ public class UserService {
 
     public UserService(UserRepository userRepository) { this.userRepository = userRepository;}
 
-    public User save(User user){ return userRepository.save(user);}
+    public User saveUser(User user){ return userRepository.save(user);}
 
     public UserResponse addUser(final CreateUserRequest createUserRequest){
         return new UserResponse(userRepository.save(User.builder()
                 .name(createUserRequest.getName())
                 .lastName(createUserRequest.getLastName())
                 .task(createUserRequest.getTask())
-                .email(createUserRequest.getEmail()));
+                .email(createUserRequest.getEmail())
+                .build()));
     }
 
     public Optional<User> updateUser(UpdateUserRequest updateUserRequest) {
@@ -39,7 +40,7 @@ public class UserService {
         user.setName(updateUserRequest.getName());
         user.setLastName(updateUserRequest.getLastName());
         user.setEmail(updateUserRequest.getEmail());
-        return save(user);
+        return saveUser(user);
     }
 
     public List<UserResponse> getAllUsers(){

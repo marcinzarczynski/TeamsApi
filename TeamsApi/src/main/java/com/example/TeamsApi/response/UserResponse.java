@@ -14,14 +14,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserResponse {
 
-    private Long userId;
+
     private Task task;
     private String name;
     private String lastName;
     private String email;
 
     public UserResponse(User user) {
-        this.userId = user.getUserId();
         this.task = user.getTask();
         this.name = user.getName();
         this.lastName = user.getLastName();
