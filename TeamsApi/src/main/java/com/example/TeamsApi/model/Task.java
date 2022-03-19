@@ -22,7 +22,10 @@ public class Task {
     private Long taskId;
     private String title;
 
-    @OneToMany
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JoinColumn(name = "task_id")
     private List<User> user;
 

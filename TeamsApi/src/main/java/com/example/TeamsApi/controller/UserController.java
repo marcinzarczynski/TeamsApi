@@ -27,7 +27,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponse> addUser(@Valid @RequestBody CreateUserRequest createUserRequest){
-        return new ResponseEntity<>(userService.addUser(createUserRequest), HttpStatus.OK);}
+        return new ResponseEntity<>(userService.addUser(createUserRequest), HttpStatus.CREATED);}
 
     @PutMapping
     public ResponseEntity<UserResponse> updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest){

@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS task;
 
 CREATE TABLE task (
   task_id int NOT NULL,
+  user_id int,
   title varchar(250) NOT NULL,
   task_description varchar(10000),
   date date NOT NULL,
@@ -12,7 +13,6 @@ CREATE TABLE task (
 
 CREATE TABLE user (
   user_id int NOT NULL,
-  task_id int,
   name varchar(250) NOT NULL,
   last_name varchar(250) NOT NULL,
   email varchar(250)  NOT NULL,
