@@ -5,6 +5,7 @@ package com.example.TeamsApi.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter
@@ -18,9 +19,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
-    @ManyToOne
-    @JoinColumn(name = "task_id")
-    private Task task;
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<Task> task;
     private String name;
     private String lastName;
     private String email;

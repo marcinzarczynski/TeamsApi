@@ -5,6 +5,7 @@ import com.example.TeamsApi.model.User;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class CreateTaskRequest {
     @NotBlank(message = "task description is required")
     private String taskDescription ;
 
-    @NotBlank(message = "date is required")
+    @NotNull(message = "date is required")
     private Date date;
 
     @NotBlank(message = "status is required")

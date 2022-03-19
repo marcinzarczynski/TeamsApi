@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -15,14 +17,14 @@ import lombok.Setter;
 public class UserResponse {
 
 
-    private Task task;
     private String name;
     private String lastName;
     private String email;
+    private List<Task> task;
 
     public UserResponse(User user) {
-        this.task = user.getTask();
         this.name = user.getName();
+        this.task = user.getTask();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
     }

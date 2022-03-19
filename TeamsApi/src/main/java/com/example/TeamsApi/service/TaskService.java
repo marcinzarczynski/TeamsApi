@@ -2,10 +2,8 @@ package com.example.TeamsApi.service;
 
 
 import com.example.TeamsApi.model.Task;
-import com.example.TeamsApi.model.User;
 import com.example.TeamsApi.request.CreateTaskRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
-import com.example.TeamsApi.request.UpdateUserRequest;
 import com.example.TeamsApi.response.TaskResponse;
 import com.example.TeamsApi.respository.TaskRepository;
 import org.springframework.stereotype.Service;

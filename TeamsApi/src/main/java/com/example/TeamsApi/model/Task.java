@@ -19,12 +19,16 @@ import java.util.List;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long taskId;
     private String title;
-    @OneToMany(mappedBy = "task")
+
+    @OneToMany
+    @JoinColumn(name = "task_id")
     private List<User> user;
+
     private String taskDescription;
     private Date date;
     private String status;
+
 }

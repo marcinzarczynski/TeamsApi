@@ -5,7 +5,7 @@ CREATE TABLE task (
   task_id int NOT NULL,
   title varchar(250) NOT NULL,
   task_description varchar(10000),
-  realization_date date NOT NULL,
+  date date NOT NULL,
   status varchar(50) NOT NULL,
   PRIMARY KEY (task_id)
 );

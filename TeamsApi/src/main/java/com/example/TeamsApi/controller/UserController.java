@@ -59,4 +59,9 @@ public class UserController {
                 new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @PutMapping("/assignTask/{email}/{taskTitle}")
+    public ResponseEntity<UserResponse> assignTask(@PathVariable String email, @PathVariable String taskTitle){
+        return userService.assignTask(email,taskTitle).map(user -> new ResponseEntity<>(new UserResponse(user), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }
