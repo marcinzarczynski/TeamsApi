@@ -5,7 +5,6 @@ import com.example.TeamsApi.model.User;
 import com.example.TeamsApi.request.CreateUserRequest;
 import com.example.TeamsApi.request.UpdateUserRequest;
 import com.example.TeamsApi.response.UserResponse;
-import com.example.TeamsApi.respository.TaskRepository;
 import com.example.TeamsApi.respository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +17,10 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final TaskRepository taskRepository;
 
-    public UserService(UserRepository userRepository, TaskRepository taskRepository) {
-        this.userRepository = userRepository;
-        this.taskRepository = taskRepository;
-    }
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;}
 
     public User saveUser(User user){ return userRepository.save(user);}
 
@@ -46,21 +43,6 @@ public class UserService {
         user.setEmail(updateUserRequest.getEmail());
         return saveUser(user);
     }
-
-    public Optional<User> assignTask(String email, String taskTitle){
-        var user = userRepository.findByEmail(email);
-        var task = taskRepository.findByTitle(taskTitle);
-//        user.ifPresent(value -> task.map(e -> e.getUser().add(value)));
-//        task.ifPresent(value -> user.ifPresent(e -> e.setTask(value)));
-
-        if(task.isPresent()){
-            task.get().getUser().add(user.get());
-        }
-
-
-        return user;
-    }
-
 
     public List<UserResponse> getAllUsers(){
         List<UserResponse> userResponses = new ArrayList<>();

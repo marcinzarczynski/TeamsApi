@@ -4,6 +4,7 @@ package com.example.TeamsApi.controller;
 import com.example.TeamsApi.request.CreateTaskRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
 import com.example.TeamsApi.response.TaskResponse;
+import com.example.TeamsApi.response.UserResponse;
 import com.example.TeamsApi.service.TaskService;
 
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,12 @@ public class TaskController {
     public ResponseEntity<TaskResponse> deleteTask(@PathVariable Long id){
         return taskService.deleteTask(id) ?
                 new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/assignTask/{email}/{taskTitle}")
+    public ResponseEntity<TaskResponse> assignTask(@PathVariable String email, @PathVariable String taskTitle){
+        return taskService.assignTask(email,taskTitle).map(task -> new ResponseEntity<>(new TaskResponse(task), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 }

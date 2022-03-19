@@ -6,6 +6,7 @@ import com.example.TeamsApi.request.CreateTaskRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
 import com.example.TeamsApi.response.TaskResponse;
 import com.example.TeamsApi.respository.TaskRepository;
+import com.example.TeamsApi.respository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,9 +18,12 @@ import java.util.Optional;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;}
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
+        this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
+    }
 
     public Task saveTask(Task task){
         return taskRepository.save(task);}
@@ -71,5 +75,15 @@ public class TaskService {
             taskRepository.delete(m);
             return true;
         }).orElse(false);
+    }
+
+    public Optional<Task> assignTask(String email, String taskTitle){
+        var user = userRepository.findByEmail(email);
+        var task = taskRepository.findByTitle(taskTitle);
+//        user.ifPresent(value -> task.map(e -> e.getUser().add(value)));
+//        task.ifPresent(value -> user.ifPresent(e -> e.setTask(value)));
+
+        task.ifPresent(value -> value.getUser().add(user.get()));
+        return task;
     }
 }
