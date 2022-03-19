@@ -24,7 +24,6 @@ public class UserResponse {
 
     public UserResponse(User user) {
         this.name = user.getName();
-        this.task = user.getTask();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
     }

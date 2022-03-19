@@ -17,7 +17,6 @@ public class CreateUserRequest {
     @NotBlank(message = "name is required")
     private String name;
 
-    private List<Task> task;
 
     @NotBlank(message = "last name is required")
     private String lastName;

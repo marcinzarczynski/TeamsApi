@@ -18,7 +18,6 @@ public class UpdateUserRequest {
 
     @NotNull(message = "User Id is required")
     private Long userId;
-    private List<Task> task;
     private String name;
     private String lastName;
     private String email;
