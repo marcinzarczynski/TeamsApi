@@ -13,5 +13,4 @@ public interface TaskRepository extends JpaRepository<Task,Long> {
     Optional<Task> findByTitle(String title);
     Optional<Task> findByDate(Date date);
     Optional<Task>  findByStatus(String status);
-//    Optional<Task>  findByUser(User user);
 }

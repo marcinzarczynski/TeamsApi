@@ -1,11 +1,13 @@
 package com.example.TeamsApi.service;
 
 import com.example.TeamsApi.model.Task;
+import com.example.TeamsApi.model.User;
 import com.example.TeamsApi.request.CreateTaskRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
 import com.example.TeamsApi.response.TaskResponse;
 import com.example.TeamsApi.respository.TaskRepository;
 import com.example.TeamsApi.respository.UserRepository;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,14 +46,13 @@ public class TaskService {
                 .build()));
     }
 
-    public Optional<Task> updateTask(UpdateTaskRequest updateTaskRequest) {
-        return taskRepository.findById(updateTaskRequest.getTaskId()).
-                map(m -> updateTask(m, updateTaskRequest));
+    public Optional<Task> updateTask(UpdateTaskRequest updateTaskRequest, String title) {
+        return taskRepository.findByTitle(title).
+                map(task -> updateTask(task, updateTaskRequest));
     }
 
     private Task updateTask(Task task, UpdateTaskRequest updateTaskRequest) {
         task.setTitle(updateTaskRequest.getTitle());
-        task.setUsers(updateTaskRequest.getUser());
         task.setTaskDescription(updateTaskRequest.getTaskDescription());
         task.setDate(updateTaskRequest.getDate());
         task.setStatus(updateTaskRequest.getStatus());
@@ -71,8 +72,8 @@ public class TaskService {
     }
 
     public boolean deleteTask(Long id) {
-        return taskRepository.findById(id).map(m -> {
-            taskRepository.delete(m);
+        return taskRepository.findById(id).map(task -> {
+            taskRepository.delete(task);
             return true;
         }).orElse(false);
     }
@@ -81,17 +82,20 @@ public class TaskService {
         var user = userRepository.findByEmail(email);
         var task = taskRepository.findByTitle(taskTitle);
 
-        if (user.isPresent() && task.isPresent()) {
-            task.get().getUsers().add(user.get());
-            var assignTask = taskRepository.save(task.get());
-            return Optional.of(TaskResponse.builder()
-                    .title(assignTask.getTitle())
-                    .date(assignTask.getDate())
-                    .status(assignTask.getStatus())
-                    .taskDescription(assignTask.getTaskDescription())
-                    .users(assignTask.getUsers()).build());
-        }
-        return Optional.empty();
+        return user.isPresent() && task.isPresent() ? assignUserToTask(user.get(), task.get())
+                : Optional.empty();
+    }
+
+    @NotNull
+    private Optional<TaskResponse> assignUserToTask(User user, Task task) {
+        task.getUsers().add(user);
+        var assignTask = taskRepository.save(task);
+        return Optional.of(TaskResponse.builder()
+                .title(assignTask.getTitle())
+                .date(assignTask.getDate())
+                .status(assignTask.getStatus())
+                .taskDescription(assignTask.getTaskDescription())
+                .users(assignTask.getUsers()).build());
     }
 
 }

@@ -1,10 +1,10 @@
 package com.example.TeamsApi.controller;
 
 
+import com.example.TeamsApi.model.User;
 import com.example.TeamsApi.request.CreateTaskRequest;
 import com.example.TeamsApi.request.CreateUserRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
-import com.example.TeamsApi.request.UpdateUserRequest;
 import com.example.TeamsApi.response.TaskResponse;
 import com.example.TeamsApi.response.UserResponse;
 import com.example.TeamsApi.service.TaskService;
@@ -31,86 +31,81 @@ public class TeamsController {
     }
 
     @GetMapping("/task")
-    public ResponseEntity<List<TaskResponse>> getAllTasks(){
+    public ResponseEntity<List<TaskResponse>> getAllTasks() {
         return new ResponseEntity<>(taskService.getAllTasks(), HttpStatus.OK);
     }
 
     @PostMapping("/task")
-    public ResponseEntity<TaskResponse> addTasks(@Valid  @RequestBody CreateTaskRequest createTaskRequest){
+    public ResponseEntity<TaskResponse> addTasks(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
         return new ResponseEntity<>(taskService.addTask(createTaskRequest), HttpStatus.CREATED);
     }
 
-    @PutMapping("/task")
-    public ResponseEntity<TaskResponse> updateTask(@Valid @RequestBody UpdateTaskRequest updateTaskRequest) {
-        return taskService.updateTask(updateTaskRequest).map(m -> new ResponseEntity<>(new TaskResponse(m), HttpStatus.OK))
+    @PutMapping("/task/{title}")
+    public ResponseEntity<TaskResponse> updateTask(@Valid @RequestBody UpdateTaskRequest updateTaskRequest, @PathVariable String title) {
+        return taskService.updateTask(updateTaskRequest, title).map(m -> new ResponseEntity<>(new TaskResponse(m), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/task/findByTitle/{title}")
-    public ResponseEntity<TaskResponse> findByTitle(@PathVariable String title){
-        return taskService.findByTitle(title).map(u -> new ResponseEntity<>(u, HttpStatus.OK )).
+    public ResponseEntity<TaskResponse> findByTitle(@PathVariable String title) {
+        return taskService.findByTitle(title).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/task/findByDate/{date}")
-    public ResponseEntity<TaskResponse> findByDate(@PathVariable Date date){
-        return taskService.findByDate(date).map(u-> new ResponseEntity<>(u,HttpStatus.OK)).
-                orElseGet(()-> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<TaskResponse> findByDate(@PathVariable Date date) {
+        return taskService.findByDate(date).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).
+                orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/task/findByStatus/{status}")
-    public ResponseEntity<TaskResponse> findByStatus(@PathVariable String status){
-        return taskService.findByStatus(status).map(u-> new ResponseEntity<>(u,HttpStatus.OK)).
-                orElseGet(()-> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<TaskResponse> findByStatus(@PathVariable String status) {
+        return taskService.findByStatus(status).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).
+                orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/task/deleteTask/{id}")
-    public ResponseEntity<TaskResponse> deleteTask(@PathVariable Long id){
+    public ResponseEntity<TaskResponse> deleteTask(@PathVariable Long id) {
         return taskService.deleteTask(id) ?
                 new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/assignTask/{email}/{taskTitle}")
-    public ResponseEntity<TaskResponse> assignTask(@PathVariable String email, @PathVariable String taskTitle){
-        return taskService.assignTask(email,taskTitle).map(task -> new ResponseEntity<>(task, HttpStatus.OK))
+    public ResponseEntity<TaskResponse> assignTask(@PathVariable String email, @PathVariable String taskTitle) {
+        return taskService.assignTask(email, taskTitle).map(task -> new ResponseEntity<>(task, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<UserResponse>> getAllUsers(){
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @PostMapping("/user")
-    public ResponseEntity<UserResponse> addUser(@Valid @RequestBody CreateUserRequest createUserRequest){
-        return new ResponseEntity<>(userService.addUser(createUserRequest), HttpStatus.CREATED);}
-
-    @PutMapping("/user")
-    public ResponseEntity<UserResponse> updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest){
-        return userService.updateUser(updateUserRequest).map(m-> new ResponseEntity<>(new UserResponse(m), HttpStatus.OK))
-                .orElseGet(()-> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<UserResponse> addUser(@Valid @RequestBody CreateUserRequest createUserRequest) {
+        return new ResponseEntity<>(userService.addUser(createUserRequest), HttpStatus.CREATED);
     }
 
     @GetMapping("/user/findByName/{name}")
-    public ResponseEntity<UserResponse> getByName(@PathVariable String name){
+    public ResponseEntity<List<User>UserResponse> getByName(@PathVariable String name) {
         return userService.findByName(name).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/user/findByLastName/{lastName}")
-    public ResponseEntity<UserResponse> getByLastName(@PathVariable String lastName){
+    public ResponseEntity<UserResponse> getByLastName(@PathVariable String lastName) {
         return userService.findByLastName(lastName).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/user/findByEmail/{email}")
-    public ResponseEntity<UserResponse> getByEmail(@PathVariable String email){
+    public ResponseEntity<UserResponse> getByEmail(@PathVariable String email) {
         return userService.findByEmail(email).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/user/deleteUser/{id}")
-    public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id){
+    public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id) {
         return userService.deleteUser(id) ?
                 new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

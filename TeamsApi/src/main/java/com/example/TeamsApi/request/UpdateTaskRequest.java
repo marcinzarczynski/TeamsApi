@@ -15,8 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class UpdateTaskRequest {
 
-    @NotNull(message = "Task Id is required")
-    private Long taskId;
     private String title;
     private List<User> user;
     private String taskDescription;
