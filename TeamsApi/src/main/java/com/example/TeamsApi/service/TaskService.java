@@ -80,10 +80,9 @@ public class TaskService {
     public Optional<Task> assignTask(String email, String taskTitle){
         var user = userRepository.findByEmail(email);
         var task = taskRepository.findByTitle(taskTitle);
-//        user.ifPresent(value -> task.map(e -> e.getUser().add(value)));
-//        task.ifPresent(value -> user.ifPresent(e -> e.setTask(value)));
 
         task.ifPresent(value -> value.getUser().add(user.get()));
+        taskRepository.save(task.get());
         return task;
     }
 }

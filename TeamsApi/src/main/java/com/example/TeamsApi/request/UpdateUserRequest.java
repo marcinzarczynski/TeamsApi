@@ -1,12 +1,9 @@
 package com.example.TeamsApi.request;
 
-import com.example.TeamsApi.model.Task;
 import javax.validation.constraints.NotNull;
-
-import com.example.TeamsApi.model.User;
 import lombok.*;
 
-import java.util.List;
+
 
 
 @Getter
