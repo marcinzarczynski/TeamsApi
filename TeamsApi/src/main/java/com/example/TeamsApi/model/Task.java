@@ -27,7 +27,7 @@ public class Task {
             orphanRemoval = true
     )
     @JoinColumn(name = "task_id")
-    private List<User> user;
+    private List<User> users;
 
     private String taskDescription;
     private Date date;

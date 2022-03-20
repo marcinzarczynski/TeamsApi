@@ -22,7 +22,7 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;}
 
-    public User saveUser(User user){ return userRepository.save(user);}
+    private User saveUser(User user){ return userRepository.save(user);}
 
     public UserResponse addUser(final CreateUserRequest createUserRequest){
         return new UserResponse(userRepository.save(User.builder()

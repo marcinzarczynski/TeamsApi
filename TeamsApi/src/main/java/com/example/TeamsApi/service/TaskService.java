@@ -1,6 +1,5 @@
 package com.example.TeamsApi.service;
 
-
 import com.example.TeamsApi.model.Task;
 import com.example.TeamsApi.request.CreateTaskRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
@@ -25,10 +24,11 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public Task saveTask(Task task){
-        return taskRepository.save(task);}
+    private Task saveTask(Task task) {
+        return taskRepository.save(task);
+    }
 
-    public List<TaskResponse> getAllTasks(){
+    public List<TaskResponse> getAllTasks() {
         List<TaskResponse> taskResponses = new ArrayList<>();
         taskRepository.findAll().forEach(task -> taskResponses.add(new TaskResponse(task)));
         return taskResponses;
@@ -37,7 +37,7 @@ public class TaskService {
     public TaskResponse addTask(final CreateTaskRequest createTaskRequest) {
         return new TaskResponse(taskRepository.save(Task.builder()
                 .title(createTaskRequest.getTitle())
-                .user(createTaskRequest.getUser())
+                .users(createTaskRequest.getUser())
                 .taskDescription(createTaskRequest.getTaskDescription())
                 .date(createTaskRequest.getDate())
                 .status(createTaskRequest.getStatus())
@@ -51,38 +51,47 @@ public class TaskService {
 
     private Task updateTask(Task task, UpdateTaskRequest updateTaskRequest) {
         task.setTitle(updateTaskRequest.getTitle());
-        task.setUser(updateTaskRequest.getUser());
+        task.setUsers(updateTaskRequest.getUser());
         task.setTaskDescription(updateTaskRequest.getTaskDescription());
         task.setDate(updateTaskRequest.getDate());
         task.setStatus(updateTaskRequest.getStatus());
         return saveTask(task);
     }
 
-    public Optional<TaskResponse> findByTitle(String title){
+    public Optional<TaskResponse> findByTitle(String title) {
         return taskRepository.findByTitle(title).map(TaskResponse::new);
     }
 
-    public Optional<TaskResponse> findByDate(Date date){
+    public Optional<TaskResponse> findByDate(Date date) {
         return taskRepository.findByDate(date).map(TaskResponse::new);
     }
 
-    public Optional<TaskResponse> findByStatus(String status){
+    public Optional<TaskResponse> findByStatus(String status) {
         return taskRepository.findByStatus(status).map(TaskResponse::new);
     }
 
-    public boolean deleteTask(Long id){
-        return taskRepository.findById(id).map(m-> {
+    public boolean deleteTask(Long id) {
+        return taskRepository.findById(id).map(m -> {
             taskRepository.delete(m);
             return true;
         }).orElse(false);
     }
 
-    public Optional<Task> assignTask(String email, String taskTitle){
+    public Optional<TaskResponse> assignTask(String email, String taskTitle) {
         var user = userRepository.findByEmail(email);
         var task = taskRepository.findByTitle(taskTitle);
 
-        task.ifPresent(value -> value.getUser().add(user.get()));
-        taskRepository.save(task.get());
-        return task;
+        if (user.isPresent() && task.isPresent()) {
+            task.get().getUsers().add(user.get());
+            var assignTask = taskRepository.save(task.get());
+            return Optional.of(TaskResponse.builder()
+                    .title(assignTask.getTitle())
+                    .date(assignTask.getDate())
+                    .status(assignTask.getStatus())
+                    .taskDescription(assignTask.getTaskDescription())
+                    .users(assignTask.getUsers()).build());
+        }
+        return Optional.empty();
     }
+
 }

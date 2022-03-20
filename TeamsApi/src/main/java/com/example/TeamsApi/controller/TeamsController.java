@@ -40,7 +40,7 @@ public class TeamsController {
         return new ResponseEntity<>(taskService.addTask(createTaskRequest), HttpStatus.CREATED);
     }
 
-    @PutMapping(("/task"))
+    @PutMapping("/task")
     public ResponseEntity<TaskResponse> updateTask(@Valid @RequestBody UpdateTaskRequest updateTaskRequest) {
         return taskService.updateTask(updateTaskRequest).map(m -> new ResponseEntity<>(new TaskResponse(m), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -70,9 +70,9 @@ public class TeamsController {
                 new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/task/assignTask/{email}/{taskTitle}")
+    @PutMapping("/assignTask/{email}/{taskTitle}")
     public ResponseEntity<TaskResponse> assignTask(@PathVariable String email, @PathVariable String taskTitle){
-        return taskService.assignTask(email,taskTitle).map(task -> new ResponseEntity<>(new TaskResponse(task), HttpStatus.OK))
+        return taskService.assignTask(email,taskTitle).map(task -> new ResponseEntity<>(task, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
