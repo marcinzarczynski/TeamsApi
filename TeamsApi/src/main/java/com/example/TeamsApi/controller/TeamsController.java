@@ -36,7 +36,7 @@ public class TeamsController {
     }
 
     @PostMapping("/task")
-    public ResponseEntity<TaskResponse> addTasks(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
+    public ResponseEntity<TaskResponse> addTask(@Valid @RequestBody CreateTaskRequest createTaskRequest) {
         return new ResponseEntity<>(taskService.addTask(createTaskRequest), HttpStatus.CREATED);
     }
 
@@ -86,11 +86,11 @@ public class TeamsController {
         return new ResponseEntity<>(userService.addUser(createUserRequest), HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/findByName/{name}")
-    public ResponseEntity<List<User>UserResponse> getByName(@PathVariable String name) {
-        return userService.findByName(name).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
+//    @GetMapping("/user/findByName/{name}")
+//    public ResponseEntity<List<User>UserResponse> getByName(@PathVariable String name) {
+//        return userService.findByName(name).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
+//                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//    }
 
     @GetMapping("/user/findByLastName/{lastName}")
     public ResponseEntity<UserResponse> getByLastName(@PathVariable String lastName) {

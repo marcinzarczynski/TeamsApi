@@ -1,6 +1,5 @@
 package com.example.TeamsApi.request;
 
-import com.example.TeamsApi.model.Task;
 import com.example.TeamsApi.model.User;
 import lombok.*;
 

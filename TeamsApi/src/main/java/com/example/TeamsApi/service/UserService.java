@@ -35,9 +35,9 @@ public class UserService {
         return userResponses;
     }
 
-    public Optional<List<UserResponse>> findByName(String name){
-        return userRepository.findByName(name).map( e -> e.stream().map(u -> UserResponse::new));
-    }
+//    public Optional<List<UserResponse>> findByName(String name){
+//        return userRepository.findByName(name).map( e -> e.stream().map(u -> UserResponse::new));
+//    }
 
     public Optional<UserResponse> findByLastName(String lastName){
         return userRepository.findByLastName(lastName).map(UserResponse::new);
