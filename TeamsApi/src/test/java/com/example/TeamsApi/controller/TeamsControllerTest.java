@@ -1,8 +1,10 @@
 package com.example.TeamsApi.controller;
 
 import com.example.TeamsApi.request.CreateTaskRequest;
+import com.example.TeamsApi.request.CreateUserRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
 import com.example.TeamsApi.response.TaskResponse;
+import com.example.TeamsApi.response.UserResponse;
 import com.example.TeamsApi.respository.TaskRepository;
 import com.example.TeamsApi.respository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,6 +54,11 @@ class TeamsControllerTest {
     private final static String sDate = "31/12/1998";
     private final Date DATE = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
     private final static String STATUS = "waiting";
+
+
+    private static final String NAME = "magda";
+    private static final String LASTNAME = "szuszkiewicz";
+    private static final String EMAIL = "szuszu@gmail.com";
 
     @Test
     void shouldGetAllTasks() throws Exception {
@@ -105,6 +112,7 @@ class TeamsControllerTest {
         final Date changeDate = new SimpleDateFormat("dd/MM/yyyy").parse(sDate1);
         final String changeStatus = "CHANGE STATUS";
 
+
         MvcResult mvcResult = mockMvc.perform(get("/api/task"))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -154,7 +162,7 @@ class TeamsControllerTest {
     }
 
     @Test
-    void taskShouldFindByTitle() throws Exception {
+    void shouldFindTaskByTitle() throws Exception {
         mockMvc.perform(post("/api/task")
                         .content(objectMapper.writeValueAsBytes(CreateTaskRequest.builder()
                                 .title(TITLE)
@@ -207,7 +215,7 @@ class TeamsControllerTest {
 //    }
 
     @Test
-    void taskShouldFindByStatus() throws Exception {
+    void shouldFindTaskByStatus() throws Exception {
 
         mockMvc.perform(post("/api/task")
                         .content(objectMapper.writeValueAsBytes(CreateTaskRequest.builder()
@@ -277,22 +285,117 @@ class TeamsControllerTest {
     }
 
     @Test
-    void getAllUsers() {
+    void shouldGetAllUsers() throws Exception {
+        mockMvc.perform(post("/api/user")
+                        .content(objectMapper.writeValueAsBytes(CreateUserRequest
+                                .builder()
+                                .name(NAME)
+                                .lastName(LASTNAME)
+                                .email(EMAIL)
+                                .build())).contentType("application/json"))
+                .andExpect(status().isCreated());
+
+        var mvcResult = mockMvc.perform(get("/api/user"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var users = Arrays.asList(objectMapper
+                .readValue(mvcResult
+                        .getResponse()
+                        .getContentAsString(), UserResponse[].class));
+
+        Assertions.assertEquals(1, users.size());
+        Assertions.assertEquals(NAME, users.get(0).getName());
+        Assertions.assertEquals(LASTNAME, users.get(0).getLastName());
+        Assertions.assertEquals(EMAIL, users.get(0).getEmail());
+
     }
 
     @Test
-    void addUser() {
+    void shouldFindByLastName() throws Exception{
+        mockMvc.perform(post("/api/user")
+                        .content(objectMapper.writeValueAsBytes(CreateUserRequest
+                                .builder()
+                                .name(NAME)
+                                .lastName(LASTNAME)
+                                .email(EMAIL)
+                                .build())).contentType("application/json"))
+                .andExpect(status().isCreated());
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/user/findByLastName/" + LASTNAME)
+                        .contentType("application/json"))
+                .andExpect(status().isOk()).andReturn();
+
+        var users = objectMapper.readValue(mvcResult
+                .getResponse()
+                .getContentAsString(), UserResponse.class);
+
+
+        Assertions.assertEquals(NAME, users.getName());
+        Assertions.assertEquals(LASTNAME, users.getLastName());
+        Assertions.assertEquals(EMAIL, users.getEmail());
     }
 
     @Test
-    void getByLastName() {
+    void shouldFindUserByEmail() throws Exception {
+        mockMvc.perform(post("/api/user")
+                        .content(objectMapper.writeValueAsBytes(CreateUserRequest
+                                .builder()
+                                .name(NAME)
+                                .lastName(LASTNAME)
+                                .email(EMAIL)
+                                .build())).contentType("application/json"))
+                .andExpect(status().isCreated());
+
+        MvcResult mvcResult = mockMvc.perform(get("/api/user/findByEmail/" + EMAIL)
+                        .contentType("application/json"))
+                .andExpect(status().isOk()).andReturn();
+
+        var users = objectMapper.readValue(mvcResult
+                .getResponse()
+                .getContentAsString(), UserResponse.class);
+
+
+        Assertions.assertEquals(NAME, users.getName());
+        Assertions.assertEquals(LASTNAME, users.getLastName());
+        Assertions.assertEquals(EMAIL, users.getEmail());
     }
 
     @Test
-    void getByEmail() {
-    }
+    void shouldDeleteUser() throws Exception {
+        mockMvc.perform(post("/api/user")
+                        .content(objectMapper.writeValueAsBytes(CreateUserRequest
+                                .builder()
+                                .name(NAME)
+                                .lastName(LASTNAME)
+                                .email(EMAIL)
+                                .build()))
+                        .contentType("application/json"))
+                .andExpect(status().isCreated());
 
-    @Test
-    void deleteUser() {
+
+        var mvcResult = mockMvc.perform(get("/api/user"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var users = Arrays.asList(objectMapper.readValue(mvcResult
+                .getResponse()
+                .getContentAsString(), UserResponse[].class));
+
+
+        mockMvc.perform(delete("/api/user/deleteUser/" + users.get(0).getUserId())
+                        .contentType("application/json"))
+                .andExpect(status().isOk());
+
+
+        mvcResult = mockMvc.perform(get("/api/user"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        var result = Arrays.asList(objectMapper.readValue(mvcResult
+                .getResponse()
+                .getContentAsString(), UserResponse[].class));
+
+        Assertions.assertEquals(0, result.size());
     }
 }

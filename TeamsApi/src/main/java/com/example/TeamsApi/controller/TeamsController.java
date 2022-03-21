@@ -1,6 +1,7 @@
 package com.example.TeamsApi.controller;
 
 
+import com.example.TeamsApi.model.User;
 import com.example.TeamsApi.request.CreateTaskRequest;
 import com.example.TeamsApi.request.CreateUserRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api")
@@ -85,19 +87,19 @@ public class TeamsController {
     }
 
 //    @GetMapping("/user/findByName/{name}")
-//    public ResponseEntity<List<User>UserResponse> getByName(@PathVariable String name) {
+//    public ResponseEntity<List<UserResponse>> findByName(@PathVariable String name) {
 //        return userService.findByName(name).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
 //                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 //    }
 
     @GetMapping("/user/findByLastName/{lastName}")
-    public ResponseEntity<UserResponse> getByLastName(@PathVariable String lastName) {
+    public ResponseEntity<UserResponse> findByLastName(@PathVariable String lastName) {
         return userService.findByLastName(lastName).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/user/findByEmail/{email}")
-    public ResponseEntity<UserResponse> getByEmail(@PathVariable String email) {
+    public ResponseEntity<UserResponse> findByEmail(@PathVariable String email) {
         return userService.findByEmail(email).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
