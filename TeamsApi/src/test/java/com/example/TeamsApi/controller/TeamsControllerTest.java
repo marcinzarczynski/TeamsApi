@@ -326,9 +326,40 @@ class TeamsControllerTest {
     }
 
     @Test
-    void assignTask() {
+    void assignTask() throws Exception {
+        mockMvc.perform(post("/api/user")
+                        .content(objectMapper.writeValueAsBytes(CreateUserRequest
+                                .builder()
+                                .name(NAME)
+                                .lastName(LASTNAME)
+                                .email(EMAIL)
+                                .build())).contentType("application/json"))
+                .andExpect(status().isCreated());
+
+        var mvcResultUser = mockMvc.perform(get("/api/user"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+
+        mockMvc.perform(post("/api/task")
+                        .content(objectMapper.writeValueAsBytes(CreateTaskRequest
+                                .builder()
+                                .title(TITLE)
+                                .taskDescription(TASKDESCRIPTION)
+                                .date(DATE)
+                                .status(STATUS)
+                                .build()))
+                        .contentType("application/json"))
+                .andExpect(status().isCreated());
+
+        var mvcResultTask = mockMvc.perform(get("/api/task"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+
 
     }
+
 
     @Test
     void shouldGetAllUsers() throws Exception {
