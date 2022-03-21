@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class TaskResponse {
 
-
+    private Long taskId;
     private String title;
     private List<User> users;
     private String taskDescription;
@@ -23,6 +23,7 @@ public class TaskResponse {
     private String status;
 
     public TaskResponse(Task task) {
+        this.taskId = task.getTaskId();
         this.title = task.getTitle();
         this.users = task.getUsers();
         this.taskDescription = task.getTaskDescription();

@@ -1,14 +1,12 @@
 package com.example.TeamsApi.controller;
 
 
-import com.example.TeamsApi.model.User;
 import com.example.TeamsApi.request.CreateTaskRequest;
 import com.example.TeamsApi.request.CreateUserRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
 import com.example.TeamsApi.response.TaskResponse;
 import com.example.TeamsApi.response.UserResponse;
 import com.example.TeamsApi.service.TaskService;
-
 import com.example.TeamsApi.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,11 +50,11 @@ public class TeamsController {
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/task/findByDate/{date}")
-    public ResponseEntity<TaskResponse> findByDate(@PathVariable Date date) {
-        return taskService.findByDate(date).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).
-                orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
+//    @GetMapping("/task/findByDate/{date}")
+//    public ResponseEntity<TaskResponse> findByDate(@PathVariable Date date) {
+//        return taskService.findByDate(date).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).
+//                orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+//    }
 
     @GetMapping("/task/findByStatus/{status}")
     public ResponseEntity<TaskResponse> findByStatus(@PathVariable String status) {

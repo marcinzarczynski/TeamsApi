@@ -63,9 +63,9 @@ public class TaskService {
         return taskRepository.findByTitle(title).map(TaskResponse::new);
     }
 
-    public Optional<TaskResponse> findByDate(Date date) {
-        return taskRepository.findByDate(date).map(TaskResponse::new);
-    }
+//    public Optional<TaskResponse> findByDate(Date date) {
+//        return taskRepository.findByDate(date).map(TaskResponse::new);
+//    }
 
     public Optional<TaskResponse> findByStatus(String status) {
         return taskRepository.findByStatus(status).map(TaskResponse::new);
