@@ -88,10 +88,15 @@ class TeamsControllerTest {
         Assertions.assertEquals(STATUS, tasks.get(0).getStatus());
     }
 
-
     @Test
-    void shouldAddTask() throws Exception {
-
+    void shouldNotGetAllTasksWithBadRequest() throws Exception {
+        mockMvc.perform(post("/api/task")
+                        .content(objectMapper.writeValueAsBytes(CreateTaskRequest.
+                                builder()
+                                .taskDescription(TASKDESCRIPTION)
+                                .build()))
+                        .contentType("application/json"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -185,7 +190,23 @@ class TeamsControllerTest {
         Assertions.assertEquals(TASKDESCRIPTION, task.getTaskDescription());
         Assertions.assertEquals(DATE, task.getDate());
         Assertions.assertEquals(STATUS, task.getStatus());
+    }
 
+    @Test
+    void shouldNotFindTaskByTitle() throws Exception {
+        mockMvc.perform(post("/api/task")
+                        .content(objectMapper.writeValueAsBytes(CreateTaskRequest.builder()
+                                .title(TITLE)
+                                .taskDescription(TASKDESCRIPTION)
+                                .date(DATE)
+                                .status(STATUS)
+                                .build()))
+                        .contentType("application/json"))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/task/findByTitle/" + "NOT EXIST")
+                        .contentType("application/json"))
+                .andExpect(status().isNotFound());
     }
 
 //    @Test
@@ -242,6 +263,23 @@ class TeamsControllerTest {
     }
 
     @Test
+    void shouldNotFindTaskByStatus() throws Exception {
+        mockMvc.perform(post("/api/task")
+                        .content(objectMapper.writeValueAsBytes(CreateTaskRequest.builder()
+                                .title(TITLE)
+                                .taskDescription(TASKDESCRIPTION)
+                                .date(DATE)
+                                .status(STATUS)
+                                .build()))
+                        .contentType("application/json"))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/task/findByStatus/" + "NOT EXIST")
+                        .contentType("application/json"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void shouldDeleteTask() throws Exception {
         mockMvc.perform(post("/api/task")
                         .content(objectMapper.writeValueAsBytes(CreateTaskRequest
@@ -281,7 +319,15 @@ class TeamsControllerTest {
     }
 
     @Test
+    void shouldNotDeleteTaskBecauseNotExist() throws Exception {
+        mockMvc.perform(delete("/api/task/delete/1")
+                        .contentType("application/json"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void assignTask() {
+
     }
 
     @Test
@@ -312,6 +358,18 @@ class TeamsControllerTest {
     }
 
     @Test
+    void shouldNotGetAllUsersWithBadRequest() throws Exception {
+        mockMvc.perform(post("/api/user")
+                        .content(objectMapper.writeValueAsBytes(CreateUserRequest.
+                                builder()
+                                .lastName(LASTNAME)
+                                .email(EMAIL)
+                                .build()))
+                        .contentType("application/json"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldFindByLastName() throws Exception{
         mockMvc.perform(post("/api/user")
                         .content(objectMapper.writeValueAsBytes(CreateUserRequest
@@ -337,6 +395,22 @@ class TeamsControllerTest {
     }
 
     @Test
+    void shouldNotFindUserByLastName() throws Exception {
+        mockMvc.perform(post("/api/user")
+                        .content(objectMapper.writeValueAsBytes(CreateUserRequest.builder()
+                                .name(NAME)
+                                .lastName(LASTNAME)
+                                .email(EMAIL)
+                                .build()))
+                        .contentType("application/json"))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/task/findByLastName/" + "NOT EXIST")
+                        .contentType("application/json"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void shouldFindUserByEmail() throws Exception {
         mockMvc.perform(post("/api/user")
                         .content(objectMapper.writeValueAsBytes(CreateUserRequest
@@ -359,6 +433,22 @@ class TeamsControllerTest {
         Assertions.assertEquals(NAME, users.getName());
         Assertions.assertEquals(LASTNAME, users.getLastName());
         Assertions.assertEquals(EMAIL, users.getEmail());
+    }
+
+    @Test
+    void shouldNotFindUserByEmail() throws Exception {
+        mockMvc.perform(post("/api/user")
+                        .content(objectMapper.writeValueAsBytes(CreateUserRequest.builder()
+                                .name(NAME)
+                                .lastName(LASTNAME)
+                                .email(EMAIL)
+                                .build()))
+                        .contentType("application/json"))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(get("/api/task/findByEmail/" + "NOT EXIST")
+                        .contentType("application/json"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -397,5 +487,12 @@ class TeamsControllerTest {
                 .getContentAsString(), UserResponse[].class));
 
         Assertions.assertEquals(0, result.size());
+    }
+
+    @Test
+    void shouldNotDeleteUserBecauseNotExist() throws Exception {
+        mockMvc.perform(delete("/api/user/delete/1")
+                        .contentType("application/json"))
+                .andExpect(status().isNotFound());
     }
 }
