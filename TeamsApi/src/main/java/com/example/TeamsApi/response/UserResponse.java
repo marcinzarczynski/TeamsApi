@@ -1,18 +1,14 @@
 package com.example.TeamsApi.response;
 
 import com.example.TeamsApi.model.User;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-
+import lombok.*;
 
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserResponse {
 
     private Long userId;

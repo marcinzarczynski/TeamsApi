@@ -21,7 +21,7 @@ public class CreateTaskRequest {
     private List<User> user;
 
     @NotBlank(message = "task description is required")
-    private String taskDescription ;
+    private String taskDescription;
 
     @NotNull(message = "date is required")
     private Date date;

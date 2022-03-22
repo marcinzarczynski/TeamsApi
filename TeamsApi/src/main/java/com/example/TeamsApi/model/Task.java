@@ -1,7 +1,6 @@
 package com.example.TeamsApi.model;
 
 
-
 import lombok.*;
 
 import javax.persistence.*;

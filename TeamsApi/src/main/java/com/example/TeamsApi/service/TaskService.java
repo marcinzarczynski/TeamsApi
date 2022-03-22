@@ -36,14 +36,15 @@ public class TaskService {
     }
 
     public TaskResponse addTask(final CreateTaskRequest createTaskRequest) {
-        return new TaskResponse(taskRepository.save(Task.builder()
-                .title(createTaskRequest.getTitle())
-                .users(createTaskRequest.getUser())
-                .taskDescription(createTaskRequest.getTaskDescription())
-                .date(createTaskRequest.getDate())
-                .status(createTaskRequest.getStatus())
-                .build()));
-    }
+            return new TaskResponse(taskRepository.save(Task.builder()
+                    .title(createTaskRequest.getTitle())
+                    .users(createTaskRequest.getUser())
+                    .taskDescription(createTaskRequest.getTaskDescription())
+                    .date(createTaskRequest.getDate())
+                    .status(createTaskRequest.getStatus())
+                    .build()));
+        }
+
 
     public Optional<Task> updateTask(UpdateTaskRequest updateTaskRequest, String title) {
         return taskRepository.findByTitle(title).
@@ -62,12 +63,20 @@ public class TaskService {
         return taskRepository.findByTitle(title).map(TaskResponse::new);
     }
 
-//    public Optional<TaskResponse> findByDate(Date date) {
-//        return taskRepository.findByDate(date).map(TaskResponse::new);
-//    }
-
-    public Optional<TaskResponse> findByStatus(String status) {
-        return taskRepository.findByStatus(status).map(TaskResponse::new);
+    public List<TaskResponse> findByStatus(String status) {
+        List<TaskResponse> taskResponses = new ArrayList<>();
+        taskRepository.findByStatus(status)
+                .map(t -> {
+                 t.forEach(e -> taskResponses.add(TaskResponse.builder()
+                         .title(e.getTitle())
+                         .date(e.getDate())
+                         .status(e.getStatus())
+                         .taskDescription(e.getTaskDescription())
+                         .users(e.getUsers())
+                         .build()));
+                 return taskResponses;
+                });
+        return taskResponses;
     }
 
     public boolean deleteTask(Long id) {

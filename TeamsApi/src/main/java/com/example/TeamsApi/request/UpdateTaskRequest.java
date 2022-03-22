@@ -3,8 +3,6 @@ package com.example.TeamsApi.request;
 import com.example.TeamsApi.model.User;
 import lombok.*;
 
-
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 

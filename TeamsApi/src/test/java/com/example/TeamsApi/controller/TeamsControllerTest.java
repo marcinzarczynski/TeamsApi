@@ -209,32 +209,6 @@ class TeamsControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-//    @Test
-//    void taskShouldFindByDate() throws Exception {
-//        mockMvc.perform(post("/api/task")
-//                        .content(objectMapper.writeValueAsBytes(CreateTaskRequest.builder()
-//                                .title(TITLE)
-//                                .taskDescription(TASKDESCRIPTION)
-//                                .date(DATE)
-//                                .status(STATUS)
-//                                .build()))
-//                        .contentType("application/json"))
-//                .andExpect(status().isCreated());
-//
-//        MvcResult mvcResult = mockMvc.perform(get("/api/task/findByDate/" + DATE)
-//                        .contentType("application/json"))
-//                .andExpect(status().isOk()).andReturn();
-//
-//        var task = objectMapper.readValue(mvcResult
-//                .getResponse()
-//                .getContentAsString(), TaskResponse.class);
-//
-//        Assertions.assertEquals(TITLE, task.getTitle());
-//        Assertions.assertEquals(TASKDESCRIPTION, task.getTaskDescription());
-//        Assertions.assertEquals(DATE, task.getDate());
-//        Assertions.assertEquals(STATUS, task.getStatus());
-//    }
-
     @Test
     void shouldFindTaskByStatus() throws Exception {
 
@@ -252,14 +226,14 @@ class TeamsControllerTest {
                         .contentType("application/json"))
                 .andExpect(status().isOk()).andReturn();
 
-        var task = objectMapper.readValue(mvcResult
+        var task = Arrays.asList(objectMapper.readValue(mvcResult
                 .getResponse()
-                .getContentAsString(), TaskResponse.class);
+                .getContentAsString(), TaskResponse[].class));
 
-        Assertions.assertEquals(TITLE, task.getTitle());
-        Assertions.assertEquals(TASKDESCRIPTION, task.getTaskDescription());
-        Assertions.assertEquals(DATE, task.getDate());
-        Assertions.assertEquals(STATUS, task.getStatus());
+        Assertions.assertEquals(TITLE, task.get(0).getTitle());
+        Assertions.assertEquals(TASKDESCRIPTION, task.get(0).getTaskDescription());
+        Assertions.assertEquals(DATE, task.get(0).getDate());
+        Assertions.assertEquals(STATUS, task.get(0).getStatus());
     }
 
     @Test
@@ -336,11 +310,6 @@ class TeamsControllerTest {
                                 .build())).contentType("application/json"))
                 .andExpect(status().isCreated());
 
-        var mvcResultUser = mockMvc.perform(get("/api/user"))
-                .andExpect(status().isOk())
-                .andReturn();
-
-
         mockMvc.perform(post("/api/task")
                         .content(objectMapper.writeValueAsBytes(CreateTaskRequest
                                 .builder()
@@ -352,11 +321,13 @@ class TeamsControllerTest {
                         .contentType("application/json"))
                 .andExpect(status().isCreated());
 
+        mockMvc.perform(put("/api/assignTask/" + EMAIL + "/" + TITLE)
+                        .contentType("application/json"))
+                .andExpect(status().isOk()).andReturn();
+
         var mvcResultTask = mockMvc.perform(get("/api/task"))
                 .andExpect(status().isOk())
                 .andReturn();
-
-
 
     }
 
@@ -401,28 +372,28 @@ class TeamsControllerTest {
     }
 
     @Test
-    void shouldFindByLastName() throws Exception{
+    void shouldFindByLastName() throws Exception {
         mockMvc.perform(post("/api/user")
                         .content(objectMapper.writeValueAsBytes(CreateUserRequest
                                 .builder()
                                 .name(NAME)
                                 .lastName(LASTNAME)
                                 .email(EMAIL)
-                                .build())).contentType("application/json"))
+                                .build()))
+                        .contentType("application/json"))
                 .andExpect(status().isCreated());
 
         MvcResult mvcResult = mockMvc.perform(get("/api/user/findByLastName/" + LASTNAME)
                         .contentType("application/json"))
                 .andExpect(status().isOk()).andReturn();
 
-        var users = objectMapper.readValue(mvcResult
+        var users = Arrays.asList(objectMapper.readValue(mvcResult
                 .getResponse()
-                .getContentAsString(), UserResponse.class);
+                .getContentAsString(), UserResponse[].class));
 
-
-        Assertions.assertEquals(NAME, users.getName());
-        Assertions.assertEquals(LASTNAME, users.getLastName());
-        Assertions.assertEquals(EMAIL, users.getEmail());
+        Assertions.assertEquals(NAME, users.get(0).getName());
+        Assertions.assertEquals(LASTNAME, users.get(0).getLastName());
+        Assertions.assertEquals(EMAIL, users.get(0).getEmail());
     }
 
     @Test
@@ -460,9 +431,8 @@ class TeamsControllerTest {
                 .getResponse()
                 .getContentAsString(), UserResponse.class);
 
-
-        Assertions.assertEquals(NAME, users.getName());
         Assertions.assertEquals(LASTNAME, users.getLastName());
+        Assertions.assertEquals(NAME, users.getName());
         Assertions.assertEquals(EMAIL, users.getEmail());
     }
 

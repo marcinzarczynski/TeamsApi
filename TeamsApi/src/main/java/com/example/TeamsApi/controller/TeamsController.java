@@ -1,7 +1,6 @@
 package com.example.TeamsApi.controller;
 
 
-import com.example.TeamsApi.model.User;
 import com.example.TeamsApi.request.CreateTaskRequest;
 import com.example.TeamsApi.request.CreateUserRequest;
 import com.example.TeamsApi.request.UpdateTaskRequest;
@@ -14,9 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api")
@@ -52,16 +49,11 @@ public class TeamsController {
                 orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-//    @GetMapping("/task/findByDate/{date}")
-//    public ResponseEntity<TaskResponse> findByDate(@PathVariable Date date) {
-//        return taskService.findByDate(date).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).
-//                orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//    }
-
     @GetMapping("/task/findByStatus/{status}")
-    public ResponseEntity<TaskResponse> findByStatus(@PathVariable String status) {
-        return taskService.findByStatus(status).map(u -> new ResponseEntity<>(u, HttpStatus.OK)).
-                orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<List<TaskResponse>> findByStatus(@PathVariable String status) {
+        var taskResponses = taskService.findByStatus(status);
+        return taskResponses.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(taskResponses, HttpStatus.OK);
     }
 
     @DeleteMapping("/task/deleteTask/{id}")
@@ -86,16 +78,18 @@ public class TeamsController {
         return new ResponseEntity<>(userService.addUser(createUserRequest), HttpStatus.CREATED);
     }
 
-//    @GetMapping("/user/findByName/{name}")
-//    public ResponseEntity<List<UserResponse>> findByName(@PathVariable String name) {
-//        return userService.findByName(name).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-//                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//    }
+    @GetMapping("/user/findByName/{name}")
+    public ResponseEntity<List<UserResponse>> findByName(@PathVariable String name) {
+        var userResponses = userService.findByName(name);
+        return userResponses.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(userResponses, HttpStatus.OK);
+    }
 
     @GetMapping("/user/findByLastName/{lastName}")
-    public ResponseEntity<UserResponse> findByLastName(@PathVariable String lastName) {
-        return userService.findByLastName(lastName).map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<List<UserResponse>> findByLastName(@PathVariable String lastName) {
+        var userResponses = userService.findByLastName(lastName);
+        return userResponses.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND) :
+                new ResponseEntity<>(userResponses, HttpStatus.OK);
     }
 
     @GetMapping("/user/findByEmail/{email}")
